@@ -8,7 +8,8 @@
 
   <style>
     /* GOOGLE FONT */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Montserrat:wght@700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
     * {
       margin: 0;
@@ -206,96 +207,283 @@
     #signup {
       display: none;
     }
+
+    /* Navbar Styles */
+    :root {
+      --primary-orange: #FF8C42;
+      --secondary-red: #FF5722;
+      --primary-blue: #4A90E2;
+      --border-light: rgba(0, 0, 0, 0.08);
+      --font-heading: 'Montserrat', sans-serif;
+      --font-body: 'Poppins', sans-serif;
+      --card-bg: #FFFFFF;
+      --text-primary: #2C3E50;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 40px);
+      max-width: 1160px;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 40px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-light);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+      border-radius: 35px;
+      z-index: 100;
+    }
+
+    .navbar:hover {
+      box-shadow: 0 8px 30px rgba(74, 144, 226, 0.3);
+    }
+
+    .logo {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(to right, var(--primary-orange), var(--secondary-red));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      z-index: 2;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 5px;
+      position: relative;
+      font-family: var(--font-body);
+    }
+
+    .nav-links a:hover {
+      color: var(--primary-orange);
+      background: rgba(255, 140, 66, 0.1);
+    }
+
+    .signup-btn {
+      background: linear-gradient(45deg, var(--primary-orange), var(--secondary-red));
+      color: var(--card-bg);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(255, 140, 66, 0.4);
+      transition: all 0.3s ease;
+      font-family: var(--font-body);
+    }
+
+    .signup-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 20px rgba(255, 87, 34, 0.6);
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .signup-btn {
+        padding: 8px 18px;
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- Floating bg shapes -->
-  <div class="circle c1"></div>
-  <div class="circle c2"></div>
+  <body>
 
-  <div class="container">
+    <header class="navbar">
+      <div class="logo" onclick="window.location.href='rentit.html'">RENT IT</div>
+      <div class="nav-right">
+        <nav class="nav-links">
+          <a href="#"><i class="fas fa-chart-line"></i> Dashboard</a>
+          <a href="#"><i class="fas fa-user-circle"></i> Profile</a>
+          <a href="#"><i class="fas fa-headset"></i> Support</a>
+        </nav>
+        <button class="signup-btn" onclick="window.location.href='login.html'">
+          <i class="fas fa-user-plus"></i> Login
+        </button>
+      </div>
+    </header>
 
-    <!-- LOGIN FORM -->
-    <div id="login">
-      <h2>Login</h2>
+    <!-- Floating bg shapes -->
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
 
-      <div class="input-group">
-        <input type="text" required placeholder=" " />
-        <label>Email</label>
+    <div class="container">
+
+      <!-- LOGIN FORM -->
+      <div id="login">
+        <h2>Login</h2>
+
+        <div class="input-group">
+          <input type="text" required placeholder=" " />
+          <label>Email</label>
+        </div>
+
+        <div class="input-group">
+          <input type="password" required placeholder=" " />
+          <label>Password</label>
+        </div>
+
+        <button class="btn">Login</button>
+
+        <!-- Social login buttons -->
+        <div class="social-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
+          Continue with Google
+        </div>
+
+        <div class="social-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg">
+          Continue with GitHub
+        </div>
+
+        <p class="toggle-text">Don't have an account? <span onclick="showSignup()">Sign Up</span></p>
       </div>
 
-      <div class="input-group">
-        <input type="password" required placeholder=" " />
-        <label>Password</label>
+      <!-- SIGNUP FORM -->
+      <div id="signup">
+        <h2>Sign Up</h2>
+
+        <div class="input-group">
+          <input type="text" required placeholder=" " />
+          <label>Full Name</label>
+        </div>
+
+        <div class="input-group">
+          <input type="email" required placeholder=" " />
+          <label>Email</label>
+        </div>
+
+        <div class="input-group">
+          <input type="password" required placeholder=" " />
+          <label>Create Password</label>
+        </div>
+
+        <button class="btn">Create Account</button>
+
+        <!-- Social sign-up buttons -->
+        <div class="social-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
+          Sign Up with Google
+        </div>
+
+        <div class="social-btn">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg">
+          Sign Up with GitHub
+        </div>
+
+        <p class="toggle-text">Already have an account? <span onclick="showLogin()">Login</span></p>
       </div>
 
-      <button class="btn">Login</button>
-
-      <!-- Social login buttons -->
-      <div class="social-btn">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
-        Continue with Google
-      </div>
-
-      <div class="social-btn">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg">
-        Continue with GitHub
-      </div>
-
-      <p class="toggle-text">Don't have an account? <span onclick="showSignup()">Sign Up</span></p>
     </div>
 
-    <!-- SIGNUP FORM -->
-    <div id="signup">
-      <h2>Sign Up</h2>
+    <script type="module">
+      import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from './firebase-config.js';
 
-      <div class="input-group">
-        <input type="text" required placeholder=" " />
-        <label>Full Name</label>
-      </div>
+      window.showSignup = function () {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("signup").style.display = "block";
+      }
 
-      <div class="input-group">
-        <input type="email" required placeholder=" " />
-        <label>Email</label>
-      </div>
+      window.showLogin = function () {
+        document.getElementById("signup").style.display = "none";
+        document.getElementById("login").style.display = "block";
+      }
 
-      <div class="input-group">
-        <input type="password" required placeholder=" " />
-        <label>Create Password</label>
-      </div>
+      // Login Logic
+      const loginBtn = document.querySelector('#login .btn');
+      if (loginBtn) {
+        loginBtn.addEventListener('click', async () => {
+          const email = document.querySelector('#login input[type="text"]').value;
+          const password = document.querySelector('#login input[type="password"]').value;
 
-      <button class="btn">Create Account</button>
+          if (!email || !password) {
+            alert("Please enter both email and password.");
+            return;
+          }
 
-      <!-- Social sign-up buttons -->
-      <div class="social-btn">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
-        Sign Up with Google
-      </div>
+          try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            console.log("Logged in:", user);
+            alert("Login Successful!");
+            window.location.href = 'rentit.html'; // Redirect to home
+          } catch (error) {
+            console.error("Login error:", error);
+            alert("Login Failed: " + error.message);
+          }
+        });
+      }
 
-      <div class="social-btn">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg">
-        Sign Up with GitHub
-      </div>
+      // Signup Logic
+      const signupBtn = document.querySelector('#signup .btn');
+      if (signupBtn) {
+        signupBtn.addEventListener('click', async () => {
+          const fullName = document.querySelector('#signup input[type="text"]').value;
+          const email = document.querySelector('#signup input[type="email"]').value;
+          const password = document.querySelector('#signup input[type="password"]').value;
 
-      <p class="toggle-text">Already have an account? <span onclick="showLogin()">Login</span></p>
-    </div>
+          if (!fullName || !email || !password) {
+            alert("Please fill in all fields.");
+            return;
+          }
 
-  </div>
+          try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
 
-  <script>
-    function showSignup() {
-      document.getElementById("login").style.display = "none";
-      document.getElementById("signup").style.display = "block";
-    }
+            // Update profile with full name
+            await updateProfile(user, {
+              displayName: fullName
+            });
 
-    function showLogin() {
-      document.getElementById("signup").style.display = "none";
-      document.getElementById("login").style.display = "block";
-    }
-  </script>
+            console.log("Signed up:", user);
+            alert("Account Created Successfully!");
+            window.location.href = 'rentit.html'; // Redirect to home
+          } catch (error) {
+            console.error("Signup error:", error);
+            alert("Signup Failed: " + error.message);
+          }
+        });
+      }
+    </script>
 
-</body>
+  </body>
 
 </html>

@@ -36,6 +36,11 @@
             --font-heading: 'Montserrat', sans-serif;
             --font-body: 'Poppins', sans-serif;
             --container-width: 1200px;
+
+            /* Navbar Variables from rentit.html */
+            --primary-orange: #FF8C42;
+            --secondary-red: #FF5722;
+            --primary-blue: #4A90E2;
         }
 
         * {
@@ -52,7 +57,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding-top: 100px;
+            padding-top: 90px;
             /* Adjusted for taller 70px nav + 20px margin */
             padding-bottom: 50px;
             position: relative;
@@ -172,13 +177,12 @@
         }
 
 
-        /* 3. Navbar Styling (Orange, Rounded, Increased Height) */
+        /* 3. Navbar Styling (Standardized) */
         .navbar {
             position: fixed;
-            top: 15px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
-
             width: calc(100% - 40px);
             max-width: 1160px;
             height: 70px;
@@ -186,14 +190,16 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 40px;
-
-            background: var(--primary-accent);
-            /* Orange Background */
-            box-shadow: 0 5px 20px rgba(255, 140, 66, 0.4);
-            border: 1px solid var(--secondary-accent);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-light);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
             border-radius: 35px;
-
             z-index: 100;
+        }
+
+        .navbar:hover {
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.3);
         }
 
         .logo {
@@ -202,25 +208,63 @@
             font-weight: 900;
             letter-spacing: 2px;
             text-transform: uppercase;
-            color: white;
+            background: linear-gradient(to right, var(--primary-orange), var(--secondary-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            z-index: 2;
             cursor: pointer;
+            color: transparent;
+            /* Override white */
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            z-index: 2;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
         }
 
         .nav-links a {
-            color: white;
+            color: #2C3E50;
             text-decoration: none;
-            margin-left: 30px;
             font-weight: 600;
             padding: 8px 12px;
             border-radius: 5px;
-            transition: opacity 0.2s;
-            border-bottom: 2px solid transparent;
+            position: relative;
+            margin-left: 0;
+            border-bottom: none;
         }
 
         .nav-links a:hover {
+            color: var(--primary-orange);
+            background: rgba(255, 140, 66, 0.1);
+            opacity: 1;
+            border-color: transparent;
+        }
+
+        .signup-btn {
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-red));
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 140, 66, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .signup-btn:hover {
             opacity: 0.9;
-            border-color: white;
-            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(255, 87, 34, 0.6);
         }
 
         /* 4. Sub-Navbar Styling (Toggle Bar) */
@@ -564,15 +608,20 @@
             }
 
             .navbar {
-                top: 10px;
-                width: calc(100% - 20px);
-                padding: 0 15px;
-                height: 50px;
-                /* Smaller nav on mobile */
+                padding: 0 20px;
+            }
+
+            .navbar {
+                padding: 0 20px;
             }
 
             .nav-links {
                 display: none;
+            }
+
+            .signup-btn {
+                padding: 8px 18px;
+                font-size: 14px;
             }
 
             .sub-navbar {
@@ -609,6 +658,220 @@
                 margin-bottom: 10px;
             }
         }
+
+        /* Modal Styling (Copied from lend-borrow.html) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: white;
+            width: 800px;
+            max-width: 90%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            z-index: 10;
+            background: none;
+            border: none;
+        }
+
+        .close-btn:hover {
+            color: var(--secondary-accent);
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            height: 500px;
+        }
+
+        .modal-main-detail {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #eee;
+        }
+
+        .modal-image-placeholder {
+            width: 100%;
+            height: 250px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .modal-description h3 {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+        }
+
+        .modal-price-tag {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--secondary-accent);
+            margin-bottom: 15px;
+        }
+
+        .modal-price-tag span {
+            font-size: 14px;
+            color: var(--light-text);
+            font-weight: 400;
+        }
+
+        .modal-full-description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--light-text);
+        }
+
+        .modal-side-info {
+            padding: 30px;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-side-info h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .lender-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .avatar-placeholder {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+            margin-right: 15px;
+        }
+
+        .lender-details p {
+            margin-bottom: 3px;
+            font-size: 14px;
+        }
+
+        .lender-name {
+            font-weight: 700;
+            color: var(--dark-text);
+        }
+
+        .lender-location,
+        .lender-rating {
+            color: var(--light-text);
+            font-size: 13px;
+        }
+
+        .chat-btn {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            transition: background-color 0.2s;
+        }
+
+        .chat-btn:hover {
+            background-color: #357abd;
+        }
+
+        .modal-extra-info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .modal-extra-info li {
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-extra-info li::before {
+            content: "•";
+            color: var(--primary-accent);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .modal-grid {
+                grid-template-columns: 1fr;
+                height: auto;
+                overflow-y: auto;
+                max-height: 80vh;
+            }
+
+            .modal-main-detail {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+        }
     </style>
 
 </head>
@@ -639,11 +902,16 @@
 
     <header class="navbar">
         <div class="logo" onclick="openPage('rentit.html')">RENT IT</div>
-        <nav class="nav-links">
-            <a href="#">Dashboard</a>
-            <a href="#">Profile</a>
-            <a href="#">Support</a>
-        </nav>
+        <div class="nav-right">
+            <nav class="nav-links">
+                <a href="#"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="#"><i class="fas fa-user-circle"></i> Profile</a>
+                <a href="#"><i class="fas fa-headset"></i> Support</a>
+            </nav>
+            <button class="signup-btn" onclick="openPage('signup.html')">
+                <i class="fas fa-user-plus"></i> Login
+            </button>
+        </div>
     </header>
 
 
@@ -660,7 +928,8 @@
         </div>
 
         <div class="item-grid">
-            <div class="item-card">
+            <div class="item-card" data-name="Used Mini-Fridge" data-price="$80 <span>by Alex S.</span>"
+                data-icon-class="fas fa-couch" data-bg-color="#fce4ec" data-color="#ad1457">
                 <div class="item-image-placeholder">
                     <i class="fas fa-couch"></i>
                 </div>
@@ -673,7 +942,8 @@
                 </div>
             </div>
 
-            <div class="item-card">
+            <div class="item-card" data-name="Old Laptop (i5, 8GB RAM)" data-price="$250 <span>by Brenda H.</span>"
+                data-icon-class="fas fa-laptop-code" data-bg-color="#e3f2fd" data-color="#1976d2">
                 <div class="item-image-placeholder">
                     <i class="fas fa-laptop-code"></i>
                 </div>
@@ -686,7 +956,8 @@
                 </div>
             </div>
 
-            <div class="item-card">
+            <div class="item-card" data-name="Ergonomic Desk Chair" data-price="$45 <span>by Chris L.</span>"
+                data-icon-class="fas fa-chair" data-bg-color="#fffde7" data-color="#f9a825">
                 <div class="item-image-placeholder">
                     <i class="fas fa-chair"></i>
                 </div>
@@ -699,7 +970,8 @@
                 </div>
             </div>
 
-            <div class="item-card">
+            <div class="item-card" data-name="Mountain Bike" data-price="$150 <span>by David M.</span>"
+                data-icon-class="fas fa-bike" data-bg-color="#e8f5e9" data-color="#388e3c">
                 <div class="item-image-placeholder">
                     <i class="fas fa-bike"></i>
                 </div>
@@ -712,6 +984,55 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    </div>
+
+    <div class="modal-overlay" id="itemDetailModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModalBtn">&times;</button>
+            <div class="modal-grid">
+                <div class="modal-main-detail">
+                    <div class="modal-image-placeholder" id="modalImagePlaceholder">
+                        <i class="fas fa-image fa-5x"></i>
+                    </div>
+                    <div class="modal-description">
+                        <h3 id="modalItemName">Item Name Placeholder</h3>
+                        <p class="modal-price-tag" id="modalItemPrice">$5 <span>/ day</span></p>
+                        <p class="modal-full-description">
+                            This is a placeholder for the full, detailed description of the item. It would include
+                            specifics like model number, condition, ideal use case, and any terms of sale.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="modal-side-info">
+                    <h4>Seller Information</h4>
+                    <div class="lender-profile">
+                        <div class="avatar-placeholder">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="lender-details">
+                            <p class="lender-name">Alex M.</p>
+                            <p class="lender-location"><i class="fas fa-map-marker-alt"></i> On Campus</p>
+                            <p class="lender-rating"><i class="fas fa-star"></i> 4.8 (12 sales)</p>
+                        </div>
+                    </div>
+                    <button class="chat-btn">
+                        <i class="fas fa-comment-dots"></i> Chat with Seller
+                    </button>
+
+                    <div class="modal-extra-info">
+                        <h4>Item Details</h4>
+                        <ul>
+                            <li>Condition: Good</li>
+                            <li>Posted: 2 days ago</li>
+                            <li>Location: Student Center</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -756,7 +1077,7 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>>
+    <script type="module" src="script.js"></script>>
 
 </body>
 
