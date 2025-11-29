@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Item | Buy & Sell Marketplace (Orange Theme)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@300;400;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* 1. Global Reset and Base Styling - Orange Theme */
+        :root {
+            --primary-accent: #FF8C42;  /* Deep Orange */
+            --secondary-accent: #FF5722; /* Red-Orange (Deeper accent) */
+            --primary-blue: #4A90E2;    /* Blue (Accent/Background shape color) */
+            
+            --light-bg: #F0F8FF;        /* Light Blue Background (Consistent) */
+            --card-bg: #ffffff;         /* Pure White Card */
+            --dark-text: #2C3E50;       /* Dark Primary Text */
+            --light-text: #6C757D;      /* Medium Grey Text */
+            --border-light: rgba(0, 0, 0, 0.08);
+            --shadow-soft: 0 8px 25px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 12px 40px rgba(255, 140, 66, 0.3); /* Orange Shadow */
+            
+            --font-heading: 'Montserrat', sans-serif;
+            --font-body: 'Poppins', sans-serif;
+            --container-width: 1200px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-body);
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 100px; /* Adjusted for taller 70px nav + 20px margin */
+            padding-bottom: 50px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 2. Dynamic Background Animation (Moving Shapes) */
+        .background-anim {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .background-anim li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            bottom: -150px;
+            width: 70px;
+            height: 70px;
+            animation: animate-bg 35s linear infinite; /* Slower animation */
+            transition: none;
+        }
+
+        /* Shape Variety */
+        .background-anim li:nth-child(3n + 1) {
+            background: rgba(255, 140, 66, 0.25); /* Orange Circle */
+            border-radius: 50%;
+        }
+
+        .background-anim li:nth-child(3n + 2) {
+            background: rgba(74, 144, 226, 0.25); /* Blue Square */
+            border-radius: 15%; /* Rounded Square */
+        }
+
+        .background-anim li:nth-child(3n) {
+            background: transparent;
+            width: 0;
+            height: 0;
+            border-left: 35px solid transparent;
+            border-right: 35px solid transparent;
+            border-bottom: 70px solid rgba(255, 87, 34, 0.25); /* Red-Orange Triangle */
+        }
+        
+        @keyframes animate-bg {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-1200px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Individual shape properties for variety (7 shapes) */
+        .background-anim li:nth-child(1) { left: 20%; animation-duration: 25s; }
+        .background-anim li:nth-child(2) { left: 5%; animation-delay: 5s; animation-duration: 20s; width: 40px; height: 40px; }
+        .background-anim li:nth-child(3) { left: 75%; animation-delay: 1s; animation-duration: 35s; }
+        .background-anim li:nth-child(4) { left: 90%; animation-delay: 6s; animation-duration: 40s; width: 90px; height: 90px; }
+        .background-anim li:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 15s; width: 60px; height: 60px; }
+        .background-anim li:nth-child(6) { left: 35%; animation-delay: 8s; animation-duration: 30s; width: 80px; height: 80px; }
+        .background-anim li:nth-child(7) { left: 60%; animation-delay: 4s; animation-duration: 22s; width: 50px; height: 50px; }
+
+
+        /* 3. Navbar Styling (Orange, Rounded, Increased Height) */
+        .navbar {
+            position: fixed;
+            top: 15px; 
+            left: 50%;
+            transform: translateX(-50%);
+            
+            width: calc(100% - 40px);
+            max-width: 1160px; 
+            height: 70px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            
+            background: var(--primary-accent); /* Orange Background */
+            box-shadow: 0 5px 20px rgba(255, 140, 66, 0.4);
+            border: 1px solid var(--secondary-accent);
+            border-radius: 35px; 
+            
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: white; 
+            cursor: pointer;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: opacity 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.9;
+            border-color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* 4. Sub-Navbar Styling (Toggle Bar) */
+        .sub-navbar {
+            position: fixed;
+            top: 90px; /* Adjusted sticky position to fit below main nav */
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-light);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            z-index: 90;
+            display: flex;
+            justify-content: center;
+        }
+
+        .sub-navbar-content {
+            width: 100%;
+            max-width: var(--container-width);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .active-heading {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--secondary-accent); /* Red-Orange for contrast */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .toggle-button {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .inactive-btn {
+            background-color: transparent;
+            color: var(--light-text);
+            border: 2px solid var(--light-text);
+            font-size: 14px;
+        }
+
+        .inactive-btn:hover {
+            border-color: var(--primary-accent);
+            color: var(--primary-accent);
+        }
+
+        /* 5. Main Content and Buttons */
+        .main-content {
+            padding: 20px 40px;
+            flex-grow: 1;
+            width: 100%;
+            max-width: var(--container-width);
+            margin: 20px auto 0; /* Creates gap below sub-navbar */
+        }
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--primary-accent);
+            padding-bottom: 15px;
+        }
+
+        .list-header h2 {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            color: var(--dark-text);
+            font-weight: 700;
+        }
+
+        .post-btn {
+            background-color: var(--secondary-accent);
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(255, 87, 34, 0.4);
+        }
+
+        .post-btn:hover {
+            background-color: var(--primary-accent);
+            transform: translateY(-1px);
+        }
+
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* 6. Item Card Styling (Hover Effect: Orange Background & Scale) */
+        .item-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+            will-change: transform, box-shadow;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px) scale(1.03); /* INCREASED SCALE & LIFT */
+            background-color: var(--primary-accent); /* HOVER: Orange Background */
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-accent);
+        }
+        
+        /* HOVER: Text and Icon color change to White */
+        .item-card:hover h3,
+        .item-card:hover p,
+        .item-card:hover .item-price,
+        .item-card:hover .item-price span,
+        .item-card:hover .item-image-placeholder i {
+            color: white !important;
+        }
+
+        .item-image-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #e6fff0; /* Base color for listing headers */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--primary-accent);
+        }
+        /* Custom card colors retained for visual appeal */
+        .item-card:nth-child(1) .item-image-placeholder { background-color: #fce4ec; color: #ad1457; }
+        .item-card:nth-child(2) .item-image-placeholder { background-color: #e3f2fd; color: #1976d2; }
+        .item-card:nth-child(3) .item-image-placeholder { background-color: #fffde7; color: #f9a825; }
+        .item-card:nth-child(4) .item-image-placeholder { background-color: #e8f5e9; color: #388e3c; }
+
+
+        .item-details {
+            padding: 15px;
+        }
+
+        .item-details h3 {
+            font-family: var(--font-heading);
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .item-details p {
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 10px;
+        }
+
+        .item-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--secondary-accent);
+        }
+
+        .item-price span {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--light-text);
+        }
+
+        /* 7. Form Styling (Modal-like) */
+        .sell-form-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sell-form-container.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .form-content {
+            width: 90%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            padding: 30px;
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .sell-form-container.active .form-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .form-content h1 {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--secondary-accent);
+        }
+
+        .form-content .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--light-text);
+            transition: color 0.2s;
+        }
+
+        .form-content .close-btn:hover {
+            color: var(--primary-accent);
+        }
+
+        /* Form specific styles */
+        .sell-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark-text);
+            font-size: 14px;
+        }
+
+        .sell-form input,
+        .sell-form textarea,
+        .sell-form button,
+        .sell-form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 15px;
+        }
+
+        .sell-form input:focus,
+        .sell-form textarea:focus,
+        .sell-form select:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.2);
+            outline: none;
+        }
+
+        .sell-form button {
+            background-color: var(--primary-accent);
+            color: white;
+            padding: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .sell-form button:hover {
+            background-color: var(--secondary-accent);
+        }
+
+        /* 8. Footer Styling */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: var(--light-text);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 95;
+        }
+
+        .footer-text a {
+            color: var(--primary-accent);
+            text-decoration: none;
+            margin-left: 5px;
+            font-weight: 500;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            
+            body {
+                padding-top: 80px; /* Adjust padding for 70px nav height */
+            }
+
+            .navbar {
+                top: 10px;
+                width: calc(100% - 20px);
+                padding: 0 15px;
+                height: 50px; /* Smaller nav on mobile */
+            }
+            
+            .nav-links {
+                display: none;
+            }
+
+            .sub-navbar {
+                top: 70px; /* Sticky below smaller nav */
+                padding: 0 15px;
+            }
+            
+            .sub-navbar-content {
+                padding: 0 5px;
+            }
+
+            .marketplace-section {
+                padding: 0 15px;
+            }
+            
+            .item-grid {
+                 grid-template-columns: 1fr;
+            }
+            
+            .post-btn {
+                width: 100%;
+                margin-top: 10px;
+                order: 3; /* Push button below appeal text on mobile */
+            }
+
+            .list-header {
+                 flex-direction: column;
+                 align-items: flex-start;
+            }
+            
+            .appeal-text {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <ul class="background-anim">
+        <li style="left: 20%; animation-duration: 25s; border-radius: 50%;"></li>
+        <li style="left: 5%; animation-delay: 5s; animation-duration: 20s; border-radius: 15%; width: 40px; height: 40px;"></li>
+        <li style="left: 75%; animation-delay: 1s; animation-duration: 35s; transform: rotate(45deg); border-radius: 0;"></li>
+        <li style="left: 90%; animation-delay: 6s; animation-duration: 40s; width: 90px; height: 90px; border-radius: 50%;"></li>
+        <li style="left: 50%; animation-delay: 3s; animation-duration: 15s; width: 60px; height: 60px; border-radius: 10%;"></li>
+        <li style="left: 35%; animation-delay: 8s; animation-duration: 30s; width: 80px; height: 80px; border-radius: 50%;"></li>
+        <li style="left: 60%; animation-delay: 4s; animation-duration: 22s; width: 50px; height: 50px; border-radius: 15%;"></li>
+    </ul>
+
+    <header class="navbar">
+        <div class="logo" onclick="openPage('rentit.html')">RENT IT</div>
+        <nav class="nav-links">
+            <a href="#">Dashboard</a>
+            <a href="#">Profile</a>
+            <a href="#">Support</a>
+        </nav>
+    </header>
+
+    <div class="sub-navbar">
+        <div class="sub-navbar-content">
+            <div class="active-heading">ITEMS FOR SALE</div>
+
+            <div class="toggle-button inactive-btn" onclick="openPage('./buy-request.html')">
+                <i class="fas fa-search-dollar"></i> LOOKING TO BUY
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        <div class="list-header">
+            <h2>Marketplace Listings</h2>
+            <button class="post-btn" onclick="toggleFormSell(true)">
+                <i class="fas fa-tag"></i> POST ITEM FOR SALE
+            </button>
+        </div>
+
+        <div class="item-grid">
+            <div class="item-card">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-couch"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Used Mini-Fridge</h3>
+                    <p>Perfect for a dorm room or small apartment.</p>
+                    <div class="item-price">
+                        $80 <span>by Alex S.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Old Laptop (i5, 8GB RAM)</h3>
+                    <p>Good for basic note-taking and browsing.</p>
+                    <div class="item-price">
+                        $250 <span>by Brenda H.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-chair"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Ergonomic Desk Chair</h3>
+                    <p>Comfortable for long study sessions.</p>
+                    <div class="item-price">
+                        $45 <span>by Chris L.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-bike"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Mountain Bike</h3>
+                    <p>Great for commuting around campus. Minor wear.</p>
+                    <div class="item-price">
+                        $150 <span>by David M.</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="sell-form-container" id="sellFormContainer">
+        <div class="form-content">
+            <span class="close-btn" onclick="toggleFormSell(false)"><i class="fas fa-times"></i></span>
+            <h1><i class="fas fa-tag"></i> List Your Item for Sale</h1>
+            <p>Fill out the details for the permanent item you want to sell.</p>
+
+            <form class="sell-form">
+                <label for="item-name">Item Name</label>
+                <input type="text" id="item-name" placeholder="e.g., Study Desk, Used Textbook" required>
+
+                <label for="category">Category</label>
+                <select id="category" required>
+                    <option value="">Select Category</option>
+                    <option value="furniture">Furniture</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="books">Textbooks / Books</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <label for="price">Selling Price ($)</label>
+                <input type="number" id="price" placeholder="e.g., 50" required min="1">
+
+                <label for="condition">Condition</label>
+                <input type="text" id="condition" placeholder="e.g., Excellent, Fair, Needs Repair" required>
+
+                <label for="description">Item Description / Details</label>
+                <textarea id="description" rows="3"
+                    placeholder="Include details about model, age, and why you are selling..."></textarea>
+
+                <button type="submit">Submit Item Listing</button>
+            </form>
+        </div>
+    </div>
+
+
+    <footer class="footer">
+        <div class="footer-text">
+            &copy; 2024 RENT IT. Built for students, by students. <a href="#">Privacy</a> | <a href="#">Terms</a>
+        </div>
+    </footer>
+
+    <script>
+        function openPage(page) {
+            window.location.href = page;
+        }
+
+        function toggleFormSell(show) {
+            const container = document.getElementById('sellFormContainer');
+            const content = container.querySelector('.form-content');
+            if (show) {
+                container.style.display = 'flex';
+                // Trigger transition after display is set
+                setTimeout(() => {
+                    container.classList.add('active');
+                    content.classList.add('active');
+                }, 10);
+            } else {
+                container.classList.remove('active');
+                content.classList.remove('active');
+                // Hide container after transition ends
+                setTimeout(() => {
+                    container.style.display = 'none';
+                }, 300);
+            }
+        }
+        
+        // --- HOVER EFFECT LOGIC (Simulates data transfer on hover for dynamic effects) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const itemCards = document.querySelectorAll('.item-card');
+
+            itemCards.forEach(card => {
+                // Initial check to apply smooth entrance animation
+                card.style.transform = 'translateY(0)';
+                card.style.opacity = 1;
+            });
+            
+            // --- BACKGROUND ANIMATION POSITIONING ---
+            const backgroundShapes = document.querySelectorAll('.background-anim li');
+            backgroundShapes.forEach(shape => {
+                shape.style.animationName = 'animate-bg';
+            });
+        });
+    </script>
+</body>
+
+</html>

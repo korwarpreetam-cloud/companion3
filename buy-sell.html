@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy & Sell Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* 1. Global Reset and Base Styling - Light Theme */
+        :root {
+            /* Primary color shifted to a more 'transactional' green/gold */
+            --primary-color: #50C878;
+            /* Primary Green Accent */
+            --secondary-color: #38A35C;
+            /* Deeper Green */
+            --chat-color: #1e7e34;
+            /* Darker Green for Chat Button */
+            --light-bg: #f5f7fa;
+            /* Very Light Background */
+            --card-bg: #ffffff;
+            /* Pure White Card */
+            --dark-text: #1f2937;
+            /* Dark Grey Text */
+            --light-text: #6b7280;
+            /* Medium Grey Text */
+            --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 20px rgba(80, 200, 120, 0.2);
+            /* Green hover shadow */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 70px;
+            /* Space for fixed navbar */
+            padding-bottom: 50px;
+            /* Space for fixed footer */
+        }
+
+        /* 2. Navbar Styling */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            background: var(--card-bg);
+            box-shadow: var(--shadow-soft);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 500;
+            transition: color 0.2s;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* 3. Sub-Navbar/Header */
+        .sub-header {
+            width: 100%;
+            padding: 15px 40px;
+            background: var(--card-bg);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+        }
+
+        .sub-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-text);
+        }
+
+        .need-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(80, 200, 120, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .need-btn:hover {
+            background-color: var(--secondary-color);
+            box-shadow: 0 4px 15px rgba(56, 163, 92, 0.4);
+        }
+
+        /* 4. Item Grid Layout */
+        .main-content {
+            padding: 40px;
+            flex-grow: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* 5. Item Card Styling */
+        .item-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-color);
+        }
+
+        .item-image-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #e6fff0;
+            /* Light green background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--primary-color);
+        }
+
+        .item-details {
+            padding: 15px;
+        }
+
+        .item-details h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .item-details p {
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 10px;
+        }
+
+        .item-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .item-price span {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--light-text);
+        }
+
+        /* 6. NEED Sidebar Styling - **FIXED FOR FULL-SCREEN TRANSITION** */
+        .need-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100vw;
+            /* Full width */
+            height: 100vh;
+            /* Full height */
+            background: var(--card-bg);
+            box-shadow: none;
+            /* No side shadow for full screen */
+            z-index: 1000;
+            transform: translateX(100%);
+            /* Start off-screen to the right */
+            transition: transform 0.4s ease-in-out;
+            /* Slide animation */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .need-sidebar.open {
+            transform: translateX(0);
+            /* Slide in */
+        }
+
+        .loading-message {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
+
+        /* 6.5 Modal Styling (NEW) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 950px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease-in-out;
+            max-height: 90vh;
+            /* Added for mobile/small screen scrolling */
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            background: none;
+            border: none;
+            color: var(--light-text);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--dark-text);
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            /* Main detail on left, info on right (as per sketch) */
+            gap: 30px;
+        }
+
+        .modal-image-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #e6fff0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .modal-description h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .modal-price-tag {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .modal-full-description {
+            line-height: 1.6;
+            color: var(--dark-text);
+            font-size: 16px;
+        }
+
+        /* Seller Info Styles */
+        .modal-side-info h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .seller-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .avatar-placeholder {
+            font-size: 50px;
+            color: var(--primary-color);
+        }
+
+        .seller-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .seller-details p {
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        .seller-details i {
+            margin-right: 5px;
+        }
+
+        .chat-btn {
+            width: 100%;
+            background-color: var(--chat-color);
+            /* Dark Green for chat/contact */
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .chat-btn:hover {
+            background-color: #1a652a;
+        }
+
+        .modal-extra-info ul {
+            list-style: none;
+        }
+
+        .modal-extra-info li {
+            font-size: 14px;
+            color: var(--dark-text);
+            padding: 3px 0;
+        }
+
+
+        /* 7. Footer Styling */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: var(--card-bg);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: var(--light-text);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 95;
+        }
+
+        .footer-text a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-left: 5px;
+            font-weight: 500;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+
+            .navbar,
+            .sub-header {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .modal-grid {
+                grid-template-columns: 1fr;
+                /* Stack on mobile */
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo" onclick="openPage('rentit.html')">BUY & SELL</div>
+        <nav class="nav-links">
+            <a href="#">Dashboard</a>
+            <a href="#">Profile</a>
+            <a href="#">Support</a>
+        </nav>
+    </header>
+
+    <div class="sub-header">
+        <h2>Items for Sale</h2>
+        <button class="need-btn" id="openNeedBtn">
+            <i class="fas fa-search-dollar"></i> LOOKING TO BUY
+        </button>
+    </div>
+
+    <div class="main-content">
+        <div class="item-grid">
+            <div class="item-card" data-name="Used Mini-Fridge" data-price="$80 <span>(Negotiable)</span>"
+                data-desc="Perfect for a dorm room or small apartment. This is a compact, energy-efficient model with a small freezer compartment. Selling as I'm moving out of town."
+                data-condition="Good">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-couch"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Used Mini-Fridge</h3>
+                    <p>Perfect for a dorm room or small apartment.</p>
+                    <div class="item-price">
+                        $80 <span>(Negotiable)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card" data-name="Old Laptop (i5, 8GB RAM)" data-price="$250 <span>(Firm Price)</span>"
+                data-desc="Good for basic note-taking and browsing. It's a 2018 model running Windows 10. Battery life is about 3 hours. Reset to factory settings."
+                data-condition="Fair">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Old Laptop (i5, 8GB RAM)</h3>
+                    <p>Good for basic note-taking and browsing.</p>
+                    <div class="item-price">
+                        $250 <span>(Firm Price)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card" data-name="Ergonomic Desk Chair" data-price="$45 <span>(Good Condition)</span>"
+                data-desc="Comfortable for long study sessions. Features adjustable height and lumbar support. No rips or major stains, just minor fading."
+                data-condition="Excellent">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-chair"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Ergonomic Desk Chair</h3>
+                    <p>Comfortable for long study sessions.</p>
+                    <div class="item-price">
+                        $45 <span>(Good Condition)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card" data-name="Mountain Bike" data-price="$150 <span>(Quick Sale)</span>"
+                data-desc="Great for commuting around campus. Minor wear and tear. Needs a quick check-up on the brakes, but otherwise rideable."
+                data-condition="Good">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-bike"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Mountain Bike</h3>
+                    <p>Great for commuting around campus. Minor wear.</p>
+                    <div class="item-price">
+                        $150 <span>(Quick Sale)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card" data-name="24-inch Monitor" data-price="$75 <span>(Negotiable)</span>"
+                data-desc="Perfect second screen for your setup. 1080p resolution, 60Hz refresh rate. Comes with HDMI cable and power cord. No dead pixels."
+                data-condition="Excellent">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-tv"></i>
+                </div>
+                <div class="item-details">
+                    <h3>24-inch Monitor</h3>
+                    <p>Perfect second screen for your setup.</p>
+                    <div class="item-price">
+                        $75 <span>(Negotiable)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card" data-name="Pair of 15lb Dumbbells" data-price="$30 <span>(Firm)</span>"
+                data-desc="For home workouts, hardly used. Vinyl coated, great grip. Must be picked up from my dorm."
+                data-condition="Like New">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-dumbbell"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Pair of 15lb Dumbbells</h3>
+                    <p>For home workouts, hardly used.</p>
+                    <div class="item-price">
+                        $30 <span>(Firm)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="itemDetailModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModalBtn">&times;</button>
+            <div class="modal-grid">
+                <div class="modal-main-detail">
+                    <div class="modal-image-placeholder">
+                        <i class="fas fa-image fa-5x"></i>
+                    </div>
+                    <div class="modal-description">
+                        <h3 id="modalItemName">Item Name Placeholder</h3>
+                        <p class="modal-price-tag" id="modalItemPrice">$0 <span>(Price)</span></p>
+                        <p class="modal-full-description" id="modalItemDesc">
+                            This is a placeholder for the full, detailed description of the item.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="modal-side-info">
+                    <h4>Seller Information</h4>
+                    <div class="seller-profile">
+                        <div class="avatar-placeholder">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="seller-details">
+                            <p class="seller-name">Jamie K.</p>
+                            <p class="seller-location"><i class="fas fa-map-marker-alt"></i> Off Campus (North)</p>
+                            <p class="seller-rating"><i class="fas fa-star" style="color: gold;"></i> 4.9 (21 sales)</p>
+                        </div>
+                    </div>
+                    <button class="chat-btn">
+                        <i class="fas fa-comment-dots"></i> Chat with Seller
+                    </button>
+
+                    <div class="modal-extra-info">
+                        <h4>Condition & Pickup</h4>
+                        <ul>
+                            <li>Condition: <strong id="modalItemCondition">N/A</strong></li>
+                            <li>Payment: Cash or Venmo preferred</li>
+                            <li>Pickup: Flexible times this week</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="need-sidebar" id="needSidebar">
+        <div class="loading-message">
+            <i class="fas fa-shopping-basket fa-3x fa-spin"></i>
+            Moving to Buy Request Form...
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-text">
+            &copy; 2024 BUY & SELL. Built for students, by students. <a href="#">Privacy</a> | <a href="#">Terms</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

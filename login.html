@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+
+  <style>
+    /* GOOGLE FONT */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #ffffff, #ffe9d6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Floating background circles */
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 165, 0, 0.15);
+      animation: float 6s infinite ease-in-out alternate;
+    }
+
+    .c1 {
+      width: 250px;
+      height: 250px;
+      top: -50px;
+      right: -40px;
+    }
+
+    .c2 {
+      width: 180px;
+      height: 180px;
+      bottom: -40px;
+      left: -30px;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-30px);
+      }
+    }
+
+    /* Card */
+    .container {
+      width: 360px;
+      padding: 30px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      animation: fadeUp 0.8s ease-out;
+      position: relative;
+      z-index: 5;
+    }
+
+    @keyframes fadeUp {
+      0% {
+        transform: translateY(40px);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    h2 {
+      text-align: center;
+      color: #ff7b00;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    /* Input box */
+    .input-group {
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      padding-top: 20px;
+      border: 2px solid #ffb066;
+      border-radius: 12px;
+      outline: none;
+      font-size: 15px;
+      background: transparent;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #ff7b00;
+      box-shadow: 0 0 10px rgba(255, 125, 0, 0.3);
+    }
+
+    /* Floating labels */
+    label {
+      position: absolute;
+      top: 13px;
+      left: 16px;
+      color: #777;
+      font-size: 14px;
+      transition: 0.3s;
+      pointer-events: none;
+    }
+
+    input:focus+label,
+    input:not(:placeholder-shown)+label {
+      top: -8px;
+      left: 10px;
+      background: #fff;
+      padding: 0 4px;
+      color: #ff7b00;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Button */
+    .btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #ff7b00;
+      border: none;
+      color: white;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 600;
+    }
+
+    .btn:hover {
+      background: #ff8f1f;
+      box-shadow: 0 8px 15px rgba(255, 125, 0, 0.5);
+      transform: translateY(-2px);
+    }
+
+    /* Social login buttons */
+    .social-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 2px solid #ddd;
+      background: white;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 600;
+      font-size: 15px;
+      justify-content: center;
+    }
+
+    .social-btn:hover {
+      background: #fff5eb;
+      border-color: #ff7b00;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(255, 125, 0, 0.3);
+    }
+
+    .social-btn img {
+      width: 20px;
+    }
+
+    /* Toggle text */
+    .toggle-text {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .toggle-text span {
+      color: #ff7b00;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .toggle-text span:hover {
+      color: #ff5500;
+    }
+
+    #signup {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Floating bg shapes -->
+  <div class="circle c1"></div>
+  <div class="circle c2"></div>
+
+  <div class="container">
+
+    <!-- LOGIN FORM -->
+    <div id="login">
+      <h2>Login</h2>
+
+      <div class="input-group">
+        <input type="text" required placeholder=" " />
+        <label>Email</label>
+      </div>
+
+      <div class="input-group">
+        <input type="password" required placeholder=" " />
+        <label>Password</label>
+      </div>
+
+      <button class="btn">Login</button>
+
+      <!-- Social login buttons -->
+      <div class="social-btn">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
+        Continue with Google
+      </div>
+
+      <div class="social-btn">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg">
+        Continue with GitHub
+      </div>
+
+      <p class="toggle-text">Don't have an account? <span onclick="showSignup()">Sign Up</span></p>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signup">
+      <h2>Sign Up</h2>
+
+      <div class="input-group">
+        <input type="text" required placeholder=" " />
+        <label>Full Name</label>
+      </div>
+
+      <div class="input-group">
+        <input type="email" required placeholder=" " />
+        <label>Email</label>
+      </div>
+
+      <div class="input-group">
+        <input type="password" required placeholder=" " />
+        <label>Create Password</label>
+      </div>
+
+      <button class="btn">Create Account</button>
+
+      <!-- Social sign-up buttons -->
+      <div class="social-btn">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
+        Sign Up with Google
+      </div>
+
+      <div class="social-btn">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg">
+        Sign Up with GitHub
+      </div>
+
+      <p class="toggle-text">Already have an account? <span onclick="showLogin()">Login</span></p>
+    </div>
+
+  </div>
+
+  <script>
+    function showSignup() {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("signup").style.display = "block";
+    }
+
+    function showLogin() {
+      document.getElementById("signup").style.display = "none";
+      document.getElementById("login").style.display = "block";
+    }
+  </script>
+
+</body>
+
+</html>

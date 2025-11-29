@@ -1,0 +1,632 @@
+/* Global Reset and Base Styling */
+:root {
+    /* Default / Home Theme */
+    --primary-color: #4A90E2;
+    --secondary-color: #50C878;
+    --accent-color: #FF8C42;
+    --light-bg: #F8F9FA;
+    --card-bg: #FFFFFF;
+    --text-primary: #2C3E50;
+    --text-secondary: #6C757D;
+    --border-light: #E9ECEF;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 8px 30px rgba(74, 144, 226, 0.15);
+}
+
+/* Theme Overrides */
+body.theme-lend {
+    --primary-color: #3f51b5;
+    /* Deeper Blue */
+    --secondary-color: #303f9f;
+    --light-bg: #e8eaf6;
+    --shadow-hover: 0 4px 10px rgba(63, 81, 181, 0.2);
+}
+
+body.theme-buy {
+    --primary-color: #50C878;
+    /* Green */
+    --secondary-color: #38A35C;
+    --light-bg: #f5f7fa;
+    --shadow-hover: 0 8px 20px rgba(80, 200, 120, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 70px;
+    padding-bottom: 50px;
+}
+
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-light);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--primary-color);
+    cursor: pointer;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-links a {
+    color: var(--text-primary);
+    text-decoration: none;
+    margin-left: 30px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+/* Login Button */
+.login-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white !important;
+    padding: 8px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    -webkit-text-fill-color: white;
+    /* Override logo gradient */
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Sub-Header */
+.sub-header {
+    width: 100%;
+    padding: 15px 40px;
+    background: var(--card-bg);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 70px;
+    z-index: 90;
+}
+
+.sub-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* Buttons */
+.action-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.action-btn.primary {
+    background-color: var(--primary-color);
+}
+
+.action-btn.secondary {
+    background-color: var(--secondary-color);
+}
+
+/* Item Grid */
+.main-content {
+    padding: 40px;
+    flex-grow: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+/* Item Card */
+.item-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary-color);
+}
+
+.item-image-placeholder {
+    width: 100%;
+    height: 180px;
+    background-color: #f0f4f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: var(--primary-color);
+}
+
+.item-details {
+    padding: 15px;
+}
+
+.item-details h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.item-details p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.item-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+
+/* Modal - Restored Complex Structure */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: 15px;
+    width: 90%;
+    max-width: 950px;
+    /* Restored wider width */
+    padding: 30px;
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    z-index: 10;
+}
+
+/* Modal Grid Layout */
+.modal-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.modal-image-placeholder {
+    width: 100%;
+    height: 300px;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.modal-description h3 {
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.modal-price-tag {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+}
+
+.modal-full-description {
+    line-height: 1.6;
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+/* Lender Info Styles */
+.modal-side-info h4 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #eee;
+}
+
+.lender-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.avatar-placeholder {
+    font-size: 50px;
+    color: var(--primary-color);
+}
+
+.lender-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.lender-details p {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.lender-details i {
+    margin-right: 5px;
+}
+
+.chat-btn {
+    width: 100%;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.chat-btn:hover {
+    background-color: #388e3c;
+}
+
+.modal-extra-info ul {
+    list-style: none;
+}
+
+.modal-extra-info li {
+    font-size: 14px;
+    color: var(--text-primary);
+    padding: 3px 0;
+}
+
+/* Sell Form Styles */
+.form-content {
+    width: 90%;
+    max-width: 500px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow-soft);
+    padding: 30px;
+    position: relative;
+    transform: scale(0.9);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-overlay.active .form-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.form-content h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--secondary-color);
+}
+
+.form-content p {
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+}
+
+.sell-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.sell-form input,
+.sell-form textarea,
+.sell-form button,
+.sell-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+.sell-form input:focus,
+.sell-form textarea:focus,
+.sell-form select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(80, 200, 120, 0.2);
+    outline: none;
+}
+
+.sell-form button {
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sell-form button:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Sidebar (Need Request) */
+.need-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--card-bg);
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.4s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.need-sidebar.open {
+    transform: translateX(0);
+}
+
+.loading-message {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+    from {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* Footer */
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: var(--card-bg);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+    z-index: 95;
+}
+
+/* Animations for Home Page */
+.icon-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lend-borrow-box .icon-wrapper::before,
+.lend-borrow-box .icon-wrapper::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    opacity: 0.2;
+}
+
+.lend-borrow-box .icon-wrapper::before {
+    left: 0;
+    animation: moveLeft 2s ease-in-out infinite;
+}
+
+.lend-borrow-box .icon-wrapper::after {
+    right: 0;
+    animation: moveRight 2s ease-in-out infinite;
+}
+
+@keyframes moveLeft {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(35px);
+    }
+}
+
+@keyframes moveRight {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(-35px);
+    }
+}
+
+.lend-borrow-box .card-icon {
+    font-size: 56px;
+    color: var(--primary-color);
+    animation: exchangePulse 2s ease-in-out infinite;
+}
+
+@keyframes exchangePulse {
+
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    25% {
+        transform: scale(1.1) rotate(-10deg);
+    }
+
+    75% {
+        transform: scale(1.1) rotate(10deg);
+    }
+}
+
+.buy-sell-box .card-icon {
+    font-size: 56px;
+    color: var(--secondary-color);
+}
+
+.buy-sell-box:hover .card-icon {
+    animation: transactionBounce 0.6s ease;
+}
+
+@keyframes transactionBounce {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .navbar,
+    .sub-header {
+        padding: 0 20px;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .modal-grid {
+        grid-template-columns: 1fr;
+    }
+}

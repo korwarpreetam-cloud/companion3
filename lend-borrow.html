@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lend & Borrow Marketplace (Dynamic UI)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@300;400;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* 1. Global Reset and Base Styling - Orange Theme */
+        :root {
+            --primary-accent: #FF8C42;
+            /* Deep Orange (Primary action color) */
+            --secondary-accent: #FF5722;
+            /* Red-Orange (Deeper accent) */
+            --primary-blue: #4A90E2;
+            /* Blue (Secondary accent for background) */
+
+            --light-bg: #F0F8FF;
+            /* Light Blue Background */
+            --card-bg: #ffffff;
+            /* Pure White Card */
+            --dark-text: #2C3E50;
+            /* Dark Primary Text */
+            --light-text: #6C757D;
+            /* Medium Grey Text */
+            --border-light: rgba(0, 0, 0, 0.08);
+            --shadow-soft: 0 8px 25px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 12px 40px rgba(255, 140, 66, 0.4);
+            /* Orange Shadow */
+
+            --font-heading: 'Montserrat', sans-serif;
+            --font-body: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-body);
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 100px;
+            /* INCREASED PADDING for taller navbar */
+            padding-bottom: 50px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 2. Dynamic Background Animation */
+        .background-anim {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .background-anim li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            bottom: -150px;
+            width: 70px;
+            height: 70px;
+            animation: animate-bg 30s linear infinite;
+            transition: none;
+        }
+
+        /* Shape Variety */
+        .background-anim li:nth-child(3n + 1) {
+            background: rgba(255, 140, 66, 0.25);
+            /* Orange Shape */
+            border-radius: 50%;
+        }
+
+        .background-anim li:nth-child(3n + 2) {
+            background: rgba(74, 144, 226, 0.25);
+            /* Blue Shape */
+            border-radius: 15%;
+            /* Rounded Square */
+        }
+
+        .background-anim li:nth-child(3n) {
+            background: transparent;
+            width: 0;
+            height: 0;
+            border-left: 35px solid transparent;
+            border-right: 35px solid transparent;
+            border-bottom: 70px solid rgba(255, 87, 34, 0.25);
+            /* Red-Orange Triangle */
+        }
+
+        /* Animation Keyframes (Slower Movement) */
+        @keyframes animate-bg {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-1200px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Individual shape properties for variety */
+        .background-anim li:nth-child(1) {
+            left: 20%;
+            animation-duration: 25s;
+        }
+
+        .background-anim li:nth-child(2) {
+            left: 5%;
+            animation-delay: 5s;
+            animation-duration: 20s;
+            width: 40px;
+            height: 40px;
+        }
+
+        .background-anim li:nth-child(3) {
+            left: 75%;
+            animation-delay: 1s;
+            animation-duration: 35s;
+        }
+
+        .background-anim li:nth-child(4) {
+            left: 90%;
+            animation-delay: 6s;
+            animation-duration: 40s;
+            width: 90px;
+            height: 90px;
+        }
+
+        .background-anim li:nth-child(5) {
+            left: 50%;
+            animation-delay: 3s;
+            animation-duration: 15s;
+            width: 60px;
+            height: 60px;
+        }
+
+        .background-anim li:nth-child(6) {
+            left: 35%;
+            animation-delay: 8s;
+            animation-duration: 30s;
+            width: 80px;
+            height: 80px;
+        }
+
+        .background-anim li:nth-child(7) {
+            left: 60%;
+            animation-delay: 4s;
+            animation-duration: 22s;
+            width: 50px;
+            height: 50px;
+        }
+
+
+        /* 3. Navbar Styling (INCREASED SIZE & BORDER RADIUS) */
+        .navbar {
+            position: fixed;
+            top: 15px;
+            /* Offset from top */
+            left: 50%;
+            transform: translateX(-50%);
+
+            width: calc(100% - 40px);
+            max-width: 1160px;
+            height: 70px;
+            /* INCREASED HEIGHT */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-light);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+
+            border-radius: 35px;
+            /* Added Border Radius */
+
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-accent);
+            background: rgba(255, 140, 66, 0.1);
+        }
+
+        /* 4. Sub-Navbar/Header (Button Group) */
+        .sub-header {
+            width: 100%;
+            padding: 15px 40px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 90px;
+            /* Adjusted sticky position */
+            z-index: 90;
+        }
+
+        .sub-header h2 {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-text);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            /* Space between buttons */
+        }
+
+        /* Primary Button Style (NEED - Orange) */
+        .need-btn {
+            background-color: var(--primary-accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(255, 140, 66, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .need-btn:hover {
+            background-color: var(--secondary-accent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.5);
+        }
+
+        /* Secondary Button Style (LIST ITEMS - Blue/Green/Alternate) */
+        .list-btn {
+            background-color: var(--primary-blue);
+            /* Blue */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(74, 144, 226, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .list-btn:hover {
+            background-color: #3a7bd5;
+            /* Deeper blue */
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(58, 123, 213, 0.5);
+        }
+
+
+        /* 5. Item Grid Layout */
+        .main-content {
+            padding: 40px;
+            flex-grow: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* 6. Item Card Styling (Hover Effect: Orange Background & Scale) */
+        .item-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+            will-change: transform, box-shadow;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            /* Increased scale */
+            background-color: var(--primary-accent);
+            /* Orange Background */
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-accent);
+        }
+
+        /* Text/Icon Color Change on Hover */
+        .item-card:hover h3,
+        .item-card:hover p,
+        .item-card:hover .item-price,
+        .item-card:hover .item-price span {
+            color: var(--card-bg) !important;
+            /* White text on orange */
+        }
+
+        .item-card:hover .item-image-placeholder i {
+            color: white !important;
+            opacity: 0.9;
+        }
+
+
+        .item-image-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #fff8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--primary-accent);
+        }
+
+        /* Custom card colors retained */
+        .item-card:nth-child(1) .item-image-placeholder {
+            background-color: #fce4ec;
+            color: #ad1457;
+        }
+
+        .item-card:nth-child(2) .item-image-placeholder {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .item-card:nth-child(3) .item-image-placeholder {
+            background-color: #fffde7;
+            color: #f9a825;
+        }
+
+        .item-card:nth-child(4) .item-image-placeholder {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .item-card:nth-child(5) .item-image-placeholder {
+            background-color: #fbe9e7;
+            color: #ff5722;
+        }
+
+        .item-card:nth-child(6) .item-image-placeholder {
+            background-color: #f5f5f5;
+            color: #607d8b;
+        }
+
+
+        .item-details {
+            padding: 15px;
+        }
+
+        .item-details h3 {
+            font-family: var(--font-heading);
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .item-details p {
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 10px;
+        }
+
+        .item-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--secondary-accent);
+        }
+
+        .item-price span {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--light-text);
+        }
+
+        /* 6. NEED Sidebar Styling (Retained) */
+        .need-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--card-bg);
+            box-shadow: none;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.4s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .need-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .loading-message {
+            font-family: var(--font-heading);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-accent);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
+
+        /* 7. Modal Styling (Item Detail View - Retained) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 950px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease-in-out;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            background: none;
+            border: none;
+            color: var(--light-text);
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: var(--primary-accent);
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .modal-image-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-accent);
+            margin-bottom: 20px;
+        }
+
+        .modal-description h3 {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .modal-price-tag {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--secondary-accent);
+            margin-bottom: 20px;
+        }
+
+        .modal-full-description {
+            line-height: 1.6;
+            color: var(--dark-text);
+            font-size: 16px;
+        }
+
+        .avatar-placeholder {
+            font-size: 50px;
+            color: var(--primary-accent);
+        }
+
+        .chat-btn {
+            width: 100%;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .chat-btn:hover {
+            background-color: #388e3c;
+        }
+
+        /* 8. Footer Styling */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: var(--light-text);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 95;
+        }
+
+        .footer-text a {
+            color: var(--primary-accent);
+            text-decoration: none;
+            margin-left: 5px;
+            font-weight: 500;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+
+            .navbar {
+                top: 10px;
+                width: calc(100% - 20px);
+                padding: 0 15px;
+            }
+
+            body {
+                padding-top: 70px;
+            }
+
+            .sub-header {
+                top: 70px;
+                /* Adjusted sticky position */
+                padding: 15px 20px;
+            }
+
+            .button-group {
+                gap: 10px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .modal-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 20px;
+                width: 95%;
+            }
+
+            .modal-image-placeholder {
+                height: 200px;
+            }
+
+            .need-btn,
+            .list-btn {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <ul class="background-anim">
+        <li style="left: 20%; animation-duration: 25s; border-radius: 50%;"></li>
+        <li
+            style="left: 5%; animation-delay: 5s; animation-duration: 20s; border-radius: 15%; width: 40px; height: 40px;">
+        </li>
+        <li
+            style="left: 75%; animation-delay: 1s; animation-duration: 35s; transform: rotate(45deg); border-radius: 0;">
+        </li>
+        <li
+            style="left: 90%; animation-delay: 6s; animation-duration: 40s; width: 90px; height: 90px; border-radius: 50%;">
+        </li>
+        <li
+            style="left: 50%; animation-delay: 3s; animation-duration: 15s; width: 60px; height: 60px; border-radius: 10%;">
+        </li>
+        <li
+            style="left: 35%; animation-delay: 8s; animation-duration: 30s; width: 80px; height: 80px; border-radius: 50%;">
+        </li>
+        <li
+            style="left: 60%; animation-delay: 4s; animation-duration: 22s; width: 50px; height: 50px; border-radius: 15%;">
+        </li>
+    </ul>
+
+    <header class="navbar">
+        <div class="logo" onclick="openPage('rentit.html')">RENT IT</div>
+        <nav class="nav-links">
+            <a href="#">Dashboard</a>
+            <a href="#">Profile</a>
+            <a href="#">Support</a>
+        </nav>
+    </header>
+
+    <div class="sub-header">
+        <h2>Available for Lending</h2>
+        <div class="button-group">
+            <button class="list-btn" onclick="openPage('list-item.html')">
+                <i class="fas fa-plus"></i> List Item
+            </button>
+            <button class="need-btn" id="openNeedBtn">
+                <i class="fas fa-hand-holding-usd"></i> NEED (Borrow)
+            </button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="item-grid">
+            <div class="item-card" data-name="Scientific Calculator" data-price="$5 <span>/ day</span>"
+                data-icon-class="fas fa-calculator" data-bg-color="#fce4ec" data-color="#ad1457">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Scientific Calculator</h3>
+                    <p>For Engineering & Maths</p>
+                    <div class="item-price">
+                        $5 <span>/ day</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card" data-name="Intro to Python Textbook" data-price="$10 <span>/ week</span>"
+                data-icon-class="fas fa-book" data-bg-color="#e3f2fd" data-color="#1976d2">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Intro to Python Textbook</h3>
+                    <p>Computer Science (Spring 2024)</p>
+                    <div class="item-price">
+                        $10 <span>/ week</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card" data-name="20,000mAh Powerbank" data-price="$3 <span>/ day</span>"
+                data-icon-class="fas fa-battery-half" data-bg-color="#fffde7" data-color="#f9a825">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-battery-half"></i>
+                </div>
+                <div class="item-details">
+                    <h3>20,000mAh Powerbank</h3>
+                    <p>Keep your devices charged!</p>
+                    <div class="item-price">
+                        $3 <span>/ day</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card" data-name="Camera Tripod (72 inch)" data-price="$5 <span>/ day</span>"
+                data-icon-class="fas fa-camera" data-bg-color="#e8f5e9" data-color="#388e3c">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Camera Tripod (72 inch)</h3>
+                    <p>Photography or Presentation use</p>
+                    <div class="item-price">
+                        $5 <span>/ day</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card" data-name="Presentation Clicker" data-price="$3 <span>/ day</span>"
+                data-icon-class="fas fa-marker" data-bg-color="#fbe9e7" data-color="#ff5722">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-marker"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Presentation Clicker</h3>
+                    <p>Wireless USB slide controller</p>
+                    <div class="item-price">
+                        $3 <span>/ day</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item-card" data-name="Basic Tool Set" data-price="$4 <span>/ day</span>"
+                data-icon-class="fas fa-wrench" data-bg-color="#f5f5f5" data-color="#607d8b">
+                <div class="item-image-placeholder">
+                    <i class="fas fa-wrench"></i>
+                </div>
+                <div class="item-details">
+                    <h3>Basic Tool Set</h3>
+                    <p>Small repairs and assembly</p>
+                    <div class="item-price">
+                        $4 <span>/ day</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="itemDetailModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModalBtn">&times;</button>
+            <div class="modal-grid">
+                <div class="modal-main-detail">
+                    <div class="modal-image-placeholder" id="modalImagePlaceholder">
+                        <i class="fas fa-image fa-5x"></i>
+                    </div>
+                    <div class="modal-description">
+                        <h3 id="modalItemName">Item Name Placeholder</h3>
+                        <p class="modal-price-tag" id="modalItemPrice">$5 <span>/ day</span></p>
+                        <p class="modal-full-description">
+                            This is a placeholder for the full, detailed description of the item. It would include
+                            specifics like model number, condition, ideal use case, and any terms of lending (e.g.,
+                            return policy, required collateral).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="modal-side-info">
+                    <h4>Lender Information</h4>
+                    <div class="lender-profile">
+                        <div class="avatar-placeholder">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="lender-details">
+                            <p class="lender-name">Alex M.</p>
+                            <p class="lender-location"><i class="fas fa-map-marker-alt"></i> On Campus</p>
+                            <p class="lender-rating"><i class="fas fa-star"></i> 4.8 (12 rentals)</p>
+                        </div>
+                    </div>
+                    <button class="chat-btn">
+                        <i class="fas fa-comment-dots"></i> Chat with Lender
+                    </button>
+
+                    <div class="modal-extra-info">
+                        <h4>Rental Terms</h4>
+                        <ul>
+                            <li>Minimum Rental: 1 day</li>
+                            <li>Late Fee: $1/hour</li>
+                            <li>Security Deposit: $20</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="need-sidebar" id="needSidebar">
+        <div class="loading-message">
+            <i class="fas fa-arrow-right fa-3x fa-spin"></i>
+            Moving to Borrow Request Form...
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-text">
+            &copy; 2024 RENT IT. Built for students, by students. <a href="#">Privacy</a> | <a href="#">Terms</a>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>

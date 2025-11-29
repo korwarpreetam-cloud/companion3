@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RENT IT: Marketplace - Need (Orange Theme)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@300;400;600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* 1. Global Reset and Base Styling - Orange Theme */
+        :root {
+            --primary-accent: #FF8C42;
+            /* Deep Orange */
+            --secondary-accent: #FF5722;
+            /* Red-Orange (Deeper accent) */
+            --primary-blue: #4A90E2;
+            /* Blue (Accent) */
+
+            --light-bg: #E0F2F7;
+            /* Light Blue Background (Consistent) */
+            --card-bg: #ffffff;
+            /* Pure White Card */
+            --dark-text: #2C3E50;
+            /* Dark Primary Text */
+            --light-text: #6C757D;
+            /* Medium Grey Text */
+            --border-light: rgba(0, 0, 0, 0.08);
+            --shadow-soft: 0 8px 25px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 10px 30px rgba(255, 140, 66, 0.3);
+
+            --font-heading: 'Montserrat', sans-serif;
+            --font-body: 'Poppins', sans-serif;
+            --container-width: 1000px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-body);
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            padding-top: 120px;
+        }
+
+        /* 2. Navbar Styling (Top Fixed) - Rounded & Orange Themed */
+        .navbar {
+            /* Positioning for centered, rounded bar */
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            /* Sizing and Layout */
+            width: calc(100% - 40px);
+            max-width: 1160px;
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+
+            /* Appearance */
+            background: var(--primary-accent);
+            /* Orange Background */
+            box-shadow: 0 5px 20px rgba(255, 140, 66, 0.4);
+            border: 1px solid var(--secondary-accent);
+            border-radius: 25px;
+            /* Added Border Radius */
+
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: white;
+            /* White text for contrast */
+            cursor: pointer;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+            border-color: white;
+        }
+
+        /* 3. Sub-Navbar Styling (Second Fixed Bar) */
+        .sub-navbar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-light);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            z-index: 90;
+            display: flex;
+            justify-content: center;
+        }
+
+        .sub-navbar-content {
+            width: 100%;
+            max-width: var(--container-width);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        /* Toggle Buttons Style */
+        .toggle-button {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .available-btn {
+            background-color: transparent;
+            color: var(--light-text);
+            border: 2px solid var(--light-text);
+            font-size: 14px;
+        }
+
+        .available-btn:hover {
+            border-color: var(--primary-accent);
+            color: var(--primary-accent);
+        }
+
+        /* Active Tab Indicator (NEED) */
+        .need-heading {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--secondary-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 4. Main Marketplace Section */
+        .marketplace-section {
+            width: 100%;
+            max-width: var(--container-width);
+            margin: 20px auto 40px;
+            padding: 0 20px;
+        }
+
+        /* Need/Borrow Appeal Section */
+        .appeal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--primary-accent);
+            padding-bottom: 15px;
+        }
+
+        .appeal-header h2 {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            color: var(--dark-text);
+            font-weight: 700;
+            margin-right: 20px;
+        }
+
+        .post-need-btn {
+            background-color: var(--secondary-accent);
+            /* Red-Orange Button */
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(255, 87, 34, 0.4);
+        }
+
+        .post-need-btn:hover {
+            background-color: var(--primary-accent);
+            transform: translateY(-1px);
+        }
+
+        .appeal-text {
+            font-style: italic;
+            color: var(--light-text);
+            flex-grow: 1;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        /* 5. Borrow Request Cards Display */
+        .request-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .request-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow-soft);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--border-light);
+        }
+
+        .request-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-accent);
+        }
+
+        .request-card h3 {
+            color: var(--primary-accent);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .request-card p {
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .request-card .borrower-info {
+            font-size: 12px;
+            color: var(--dark-text);
+            font-weight: 600;
+            border-top: 1px dashed #eee;
+            padding-top: 10px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 6. Form Styling (Modal-like) */
+        .need-form-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .need-form-container.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .main-content {
+            width: 90%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            padding: 30px;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .need-form-container.active .main-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .main-content h1 {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--secondary-accent);
+        }
+
+        .main-content .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--light-text);
+            transition: color 0.2s;
+        }
+
+        .main-content .close-btn:hover {
+            color: var(--primary-accent);
+        }
+
+        /* Form specific styles */
+        .need-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark-text);
+            font-size: 14px;
+        }
+
+        .need-form input,
+        .need-form textarea,
+        .need-form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 15px;
+        }
+
+        .need-form input:focus,
+        .need-form textarea:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.2);
+            outline: none;
+        }
+
+        .need-form button {
+            background-color: var(--primary-accent);
+            color: white;
+            padding: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .need-form button:hover {
+            background-color: var(--secondary-accent);
+        }
+
+        /* 7. Footer Styling */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: var(--light-text);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 95;
+        }
+
+        .footer-text a {
+            color: var(--primary-accent);
+            text-decoration: none;
+            margin-left: 5px;
+            font-weight: 500;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+
+            body {
+                padding-top: 120px;
+            }
+
+            .navbar {
+                top: 10px;
+                width: calc(100% - 20px);
+                padding: 0 15px;
+                height: 50px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .sub-navbar {
+                top: 70px;
+                padding: 0 15px;
+            }
+
+            .sub-navbar-content {
+                padding: 0 5px;
+            }
+
+            .marketplace-section {
+                padding: 0 15px;
+            }
+
+            .appeal-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .appeal-text {
+                text-align: left;
+                margin: 10px 0 15px;
+            }
+
+            .post-need-btn {
+                width: 100%;
+                font-size: 15px;
+            }
+
+            .need-heading {
+                font-size: 16px;
+            }
+
+            .request-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo" onclick="openPage('rentit.html')">RENT IT</div>
+        <nav class="nav-links">
+            <a href="#">Dashboard</a>
+            <a href="#">Profile</a>
+            <a href="#">Support</a>
+        </nav>
+    </header>
+
+    <div class="sub-navbar">
+        <div class="sub-navbar-content">
+            <div class="toggle-button available-btn" onclick="openPage('./lend-borrow.html')">
+                Available
+            </div>
+
+            <div class="need-heading">NEED / NEED TO BORROW</div>
+
+            <div></div>
+        </div>
+    </div>
+
+    <div class="marketplace-section">
+
+        <div class="appeal-header">
+            <p class="appeal-text">
+                <i class="fas fa-arrow-right"></i> Storm to appeal for your needs
+            </p>
+            <button class="post-need-btn" onclick="toggleForm(true)">
+                <i class="fas fa-plus"></i> POST NEW NEED
+            </button>
+        </div>
+
+        <div class="request-grid">
+
+            <div class="request-card">
+                <h3><i class="fas fa-calculator"></i> Calculator Needed</h3>
+                <p>Ayush appealed for calculator.</p>
+                <div class="borrower-info">
+                    <span>Ayush M.</span>
+                    <span>For 5 days | Max: $3/day</span>
+                </div>
+            </div>
+
+            <div class="request-card">
+                <h3><i class="fas fa-headphones"></i> Earphone Needed</h3>
+                <p>Shareef needed an earphone for online classes and music.</p>
+                <div class="borrower-info">
+                    <span>Shareef K.</span>
+                    <span>For 2 weeks | Max: $1/day</span>
+                </div>
+            </div>
+
+            <div class="request-card">
+                <h3><i class="fas fa-book"></i> Textbook Needed</h3>
+                <p>Looking for the latest edition of 'Intro to CS' for a month.</p>
+                <div class="borrower-info">
+                    <span>Sana H.</span>
+                    <span>For 30 days | Max: $0.5/day</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="need-form-container" id="needFormContainer">
+        <div class="main-content">
+            <span class="close-btn" onclick="toggleForm(false)"><i class="fas fa-times"></i></span>
+            <h1><i class="fas fa-hand-holding-usd"></i> Post a Borrow Request</h1>
+            <p>Fill out the details for the item you need to borrow.</p>
+
+            <form class="need-form">
+                <label for="item-name">Item Name</label>
+                <input type="text" id="item-name" placeholder="e.g., TI-84 Plus Calculator" required>
+
+                <label for="duration">Required Duration (Days)</label>
+                <input type="number" id="duration" placeholder="e.g., 3 days" required min="1">
+
+                <label for="max-price">Max Price willing to pay (per day)</label>
+                <input type="number" id="max-price" placeholder="e.g., $5" required min="1">
+
+                <label for="description">Item Description / Details</label>
+                <textarea id="description" rows="3"
+                    placeholder="I need it for my Calculus exam on Monday..."></textarea>
+
+                <button type="submit">Submit Borrow Request</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
