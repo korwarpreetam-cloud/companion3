@@ -1,4 +1,4 @@
-import { auth, onAuthStateChanged, signOut } from './firebase-config.js';
+import { auth, onAuthStateChanged, signOut, db, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from './firebase-config.js';
 
 /**
  * Global function to handle page navigation across the marketplace
@@ -56,6 +56,44 @@ window.alertBox = function (message, type) {
     }, 3000);
 }
 
+// Global toggle functions for forms (needed for onclick attributes in HTML)
+window.toggleForm = function (show) {
+    const container = document.getElementById('needFormContainer');
+    if (!container) return;
+
+    if (show) {
+        container.style.display = 'flex';
+        setTimeout(() => {
+            container.classList.add('active');
+        }, 10);
+    } else {
+        container.classList.remove('active');
+        setTimeout(() => {
+            container.style.display = 'none';
+        }, 300);
+    }
+}
+
+window.toggleFormSell = function (show) {
+    const container = document.getElementById('sellFormContainer');
+    if (!container) return;
+
+    const content = container.querySelector('.form-content');
+    if (show) {
+        container.style.display = 'flex';
+        setTimeout(() => {
+            container.classList.add('active');
+            if (content) content.classList.add('active');
+        }, 10);
+    } else {
+        container.classList.remove('active');
+        if (content) content.classList.remove('active');
+        setTimeout(() => {
+            container.style.display = 'none';
+        }, 300);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- AUTHENTICATION & ACCESS CONTROL ---
     const protectedPages = ['lend-borrow.html', 'sell.item.html', 'buy-sell.html', 'need-request.html'];
@@ -63,15 +101,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // User is signed in
             console.log("User is signed in:", user.displayName || user.email);
             updateNavbar(user);
         } else {
-            // User is signed out
             console.log("User is signed out");
             updateNavbar(null);
 
-            // Check access control
             if (protectedPages.includes(currentPage)) {
                 alert("Please login to access this page.");
                 window.location.href = 'login.html';
@@ -84,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!navRight) return;
 
         if (user) {
-            // Show User Profile and Logout
             const userName = user.displayName || "User";
             navRight.innerHTML = `
                 <nav class="nav-links">
@@ -97,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </button>
             `;
 
-            // Re-attach event listener for logout
             document.getElementById('logoutBtn').addEventListener('click', () => {
                 signOut(auth).then(() => {
                     alertBox("Logged out successfully", "info");
@@ -108,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
         } else {
-            // Show Login Button
             navRight.innerHTML = `
                 <nav class="nav-links">
                     <a href="#"><i class="fas fa-chart-line"></i> Dashboard</a>
@@ -122,119 +154,296 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- FIRESTORE LOGIC ---
 
-    // --- Buy/Sell Marketplace (buy-sell.html) Logic ---
-    const sidebarBuySell = document.getElementById('needSidebar');
-    const openBtnBuySell = document.getElementById('openNeedBtn');
-    const itemCardsBuySell = document.querySelectorAll('.item-card');
-    const modalBuySell = document.getElementById('itemDetailModal');
-    const closeModalBtnBuySell = document.getElementById('closeModalBtn');
-    const modalItemNameBuySell = document.getElementById('modalItemName');
-    const modalItemPriceBuySell = document.getElementById('modalItemPrice');
-    const modalItemDescBuySell = document.getElementById('modalItemDesc');
-    const modalItemConditionBuySell = document.getElementById('modalItemCondition');
+    if (currentPage === 'sell.item.html') {
+        fetchItems('items_for_sale', 'sellingItemsGrid');
+    } else if (currentPage === 'lend-borrow.html') {
+        fetchItems('items_for_lending', 'lendingItemsGrid');
+    } else if (currentPage === 'need-request.html') {
+        fetchRequests();
+    }
 
-    if (openBtnBuySell && sidebarBuySell) {
-        openBtnBuySell.addEventListener('click', () => {
-            sidebarBuySell.classList.add('open');
-            setTimeout(() => {
-                openPage('sell.item.html');
-            }, 400);
+    async function fetchItems(collectionName, gridId) {
+        const grid = document.getElementById(gridId);
+        if (!grid) return;
+
+        grid.innerHTML = '<p style="text-align:center; width:100%;">Loading items...</p>';
+
+        try {
+            const q = query(collection(db, collectionName), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+
+            grid.innerHTML = '';
+
+            if (querySnapshot.empty) {
+                grid.innerHTML = '<p style="text-align:center; width:100%;">No items listed yet.</p>';
+                return;
+            }
+
+            querySnapshot.forEach((doc) => {
+                const item = doc.data();
+                const card = createItemCard(item);
+                grid.appendChild(card);
+            });
+
+            attachModalListeners();
+
+        } catch (error) {
+            console.error("Error fetching items:", error);
+            grid.innerHTML = '<p style="text-align:center; width:100%; color:red;">Error loading items.</p>';
+        }
+    }
+
+    async function fetchRequests() {
+        const grid = document.getElementById('requestGrid');
+        if (!grid) return;
+
+        grid.innerHTML = '<p style="text-align:center; width:100%;">Loading requests...</p>';
+
+        try {
+            const q = query(collection(db, 'borrow_requests'), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+
+            grid.innerHTML = '';
+
+            if (querySnapshot.empty) {
+                grid.innerHTML = '<p style="text-align:center; width:100%;">No requests yet.</p>';
+                return;
+            }
+
+            querySnapshot.forEach((doc) => {
+                const req = doc.data();
+                const card = createRequestCard(req);
+                grid.appendChild(card);
+            });
+
+        } catch (error) {
+            console.error("Error fetching requests:", error);
+            grid.innerHTML = '<p style="text-align:center; width:100%; color:red;">Error loading requests.</p>';
+        }
+    }
+
+    function createItemCard(item) {
+        const div = document.createElement('div');
+        div.className = 'item-card';
+        div.setAttribute('data-name', item.name);
+        div.setAttribute('data-price', `$${item.price} <span>/ ${item.period || 'day'}</span>`);
+        div.setAttribute('data-icon-class', getIconClass(item.category));
+        div.setAttribute('data-bg-color', getBgColor(item.category));
+        div.setAttribute('data-color', getColor(item.category));
+        div.setAttribute('data-desc', item.description);
+        div.setAttribute('data-condition', item.condition);
+        div.setAttribute('data-seller', item.userName);
+
+        div.innerHTML = `
+            <div class="item-image-placeholder" style="background-color: ${getBgColor(item.category)}; color: ${getColor(item.category)};">
+                <i class="${getIconClass(item.category)}"></i>
+            </div>
+            <div class="item-details">
+                <h3>${item.name}</h3>
+                <p>${item.description ? item.description.substring(0, 30) + '...' : 'No description'}</p>
+                <div class="item-price">
+                    $${item.price} <span>by ${item.userName}</span>
+                </div>
+            </div>
+        `;
+        return div;
+    }
+
+    function createRequestCard(req) {
+        const div = document.createElement('div');
+        div.className = 'request-card';
+        div.innerHTML = `
+            <h3><i class="fas fa-hand-holding"></i> ${req.itemName} Needed</h3>
+            <p>${req.description}</p>
+            <div class="borrower-info">
+                <span>${req.userName}</span>
+                <span>For ${req.duration} days | Max: $${req.maxPrice}/day</span>
+            </div>
+        `;
+        return div;
+    }
+
+    function getIconClass(category) {
+        const map = {
+            'electronics': 'fas fa-laptop',
+            'books': 'fas fa-book',
+            'stationery': 'fas fa-pencil-alt',
+            'other': 'fas fa-box',
+            'furniture': 'fas fa-chair',
+            'vehicle': 'fas fa-bicycle'
+        };
+        return map[category] || 'fas fa-box';
+    }
+
+    function getBgColor(category) {
+        const map = {
+            'electronics': '#e3f2fd',
+            'books': '#e8f5e9',
+            'stationery': '#fffde7',
+            'other': '#f3e5f5'
+        };
+        return map[category] || '#f5f5f5';
+    }
+
+    function getColor(category) {
+        const map = {
+            'electronics': '#1976d2',
+            'books': '#388e3c',
+            'stationery': '#fbc02d',
+            'other': '#7b1fa2'
+        };
+        return map[category] || '#616161';
+    }
+
+    // --- MODAL LOGIC ---
+    const modalOverlay = document.getElementById('itemDetailModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modalItemName = document.getElementById('modalItemName');
+    const modalItemPrice = document.getElementById('modalItemPrice');
+    const modalImagePlaceholder = document.getElementById('modalImagePlaceholder');
+    // Add selectors for description and seller info if they exist in HTML
+    const modalItemDesc = document.querySelector('.modal-full-description');
+    const modalSellerName = document.querySelector('.lender-name');
+
+    function populateAndOpenModal(card) {
+        const name = card.getAttribute('data-name');
+        const price = card.getAttribute('data-price');
+        const iconClass = card.getAttribute('data-icon-class');
+        const bgColor = card.getAttribute('data-bg-color');
+        const color = card.getAttribute('data-color');
+        const desc = card.getAttribute('data-desc');
+        const seller = card.getAttribute('data-seller');
+
+        if (modalItemName) modalItemName.textContent = name;
+        if (modalItemPrice) modalItemPrice.innerHTML = price;
+        if (modalItemDesc && desc) modalItemDesc.textContent = desc;
+        if (modalSellerName && seller) modalSellerName.textContent = seller;
+
+        if (modalImagePlaceholder) {
+            modalImagePlaceholder.innerHTML = `<i class="${iconClass} fa-5x"></i>`;
+            modalImagePlaceholder.style.backgroundColor = bgColor;
+            modalImagePlaceholder.style.color = color;
+        }
+
+        if (modalOverlay) modalOverlay.classList.add('active');
+    }
+
+    function attachModalListeners() {
+        const itemCards = document.querySelectorAll('.item-card');
+        itemCards.forEach(card => {
+            card.addEventListener('click', () => {
+                populateAndOpenModal(card);
+            });
         });
     }
 
-    if (modalBuySell) {
-        // Shared modal logic for buy-sell and lend-borrow if IDs match
-        // Note: lend-borrow uses populateAndOpenModal below, this block might be redundant or specific to buy-sell if IDs differ
-        // Checking IDs in buy-sell.html would confirm. Assuming standard IDs for now.
-    }
-
-    // --- Lend/Borrow Marketplace (lend-borrow.html) Logic ---
-    const sidebarLendBorrow = document.getElementById('needSidebar');
-    const openBtnLendBorrow = document.getElementById('openNeedBtn');
-    // ... (rest of the logic is handled by general selectors below)
-
-    if (openBtnLendBorrow && sidebarLendBorrow) {
-        openBtnLendBorrow.addEventListener('click', () => {
-            sidebarLendBorrow.classList.add('open');
-            setTimeout(() => {
-                openPage('need-request.html');
-            }, 400);
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', () => {
+            if (modalOverlay) modalOverlay.classList.remove('active');
         });
     }
 
-    // --- Post Borrow Request (need-request.html) Logic ---
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+            }
+        });
+    }
+
+    // --- FORM SUBMISSION LOGIC ---
+
+    // Borrow Request Form
     const needForm = document.querySelector('.need-form');
-    const needFormContainer = document.getElementById('needFormContainer');
-
-    // Function to toggle the borrow form modal
-    window.toggleForm = (show) => {
-        if (show) {
-            needFormContainer.style.display = 'flex';
-            setTimeout(() => {
-                needFormContainer.classList.add('active');
-            }, 10);
-        } else {
-            needFormContainer.classList.remove('active');
-            setTimeout(() => {
-                needFormContainer.style.display = 'none';
-            }, 300);
-        }
-    }
-
     if (needForm) {
-        needForm.addEventListener('submit', (e) => {
+        needForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const user = auth.currentUser;
+            if (!user) {
+                alert("You must be logged in to post.");
+                return;
+            }
 
-            alertBox('Borrow Request Submitted! Lenders will be notified.', 'success');
+            const itemName = document.getElementById('item-name').value;
+            const duration = document.getElementById('duration').value;
+            const maxPrice = document.getElementById('max-price').value;
+            const description = document.getElementById('description').value;
 
-            needForm.reset();
-            window.toggleForm(false);
+            try {
+                await addDoc(collection(db, "borrow_requests"), {
+                    itemName,
+                    duration,
+                    maxPrice,
+                    description,
+                    userId: user.uid,
+                    userName: user.displayName || "Anonymous",
+                    createdAt: serverTimestamp()
+                });
+
+                alertBox('Borrow Request Submitted!', 'success');
+                needForm.reset();
+                window.toggleForm(false);
+                fetchRequests();
+
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                alertBox("Error submitting request.", "error");
+            }
         });
     }
 
-    // --- Post Sell Item (sell.item.html) Logic ---
+    // Sell/Lend Form
     const sellForm = document.querySelector('.sell-form');
-    const sellFormContainer = document.getElementById('sellFormContainer');
-
-    // Function to toggle the sell form modal
-    window.toggleFormSell = (show) => {
-        if (show) {
-            sellFormContainer.style.display = 'flex';
-            setTimeout(() => {
-                sellFormContainer.classList.add('active');
-            }, 10);
-        } else {
-            sellFormContainer.classList.remove('active');
-            setTimeout(() => {
-                sellFormContainer.style.display = 'none';
-            }, 300);
-        }
-    }
-
-    // Alias the correct toggle function for the button in sell.item.html
-    const postSellBtn = document.querySelector('.post-btn[onclick="toggleForm(true)"]');
-    if (postSellBtn) {
-        postSellBtn.setAttribute('onclick', 'toggleFormSell(true)');
-    }
-    const closeSellBtn = document.querySelector('.form-content .close-btn[onclick="toggleForm(false)"]');
-    if (closeSellBtn) {
-        closeSellBtn.setAttribute('onclick', 'toggleFormSell(false)');
-    }
-
-
     if (sellForm) {
-        sellForm.addEventListener('submit', (e) => {
+        sellForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const user = auth.currentUser;
+            if (!user) {
+                alert("You must be logged in to post.");
+                return;
+            }
 
-            alertBox('Item Listing Submitted! Buyers will be able to see it.', 'success');
+            const name = document.getElementById('item-name').value;
+            const category = document.getElementById('category').value;
+            const price = document.getElementById('price').value;
+            const condition = document.getElementById('condition').value;
+            const description = document.getElementById('description').value;
 
-            sellForm.reset();
-            window.toggleFormSell(false);
+            let targetCollection = 'items_for_sale';
+            if (currentPage === 'lend-borrow.html') {
+                targetCollection = 'items_for_lending';
+            }
+
+            try {
+                await addDoc(collection(db, targetCollection), {
+                    name,
+                    category,
+                    price,
+                    condition,
+                    description,
+                    userId: user.uid,
+                    userName: user.displayName || "Anonymous",
+                    createdAt: serverTimestamp()
+                });
+
+                alertBox('Item Listed Successfully!', 'success');
+                sellForm.reset();
+                window.toggleFormSell(false);
+
+                if (currentPage === 'sell.item.html') fetchItems('items_for_sale', 'sellingItemsGrid');
+                if (currentPage === 'lend-borrow.html') fetchItems('items_for_lending', 'lendingItemsGrid');
+
+            } catch (error) {
+                console.error("Error adding item: ", error);
+                alertBox("Error listing item.", "error");
+            }
         });
     }
 
-    // --- 1. PRELOADER LOGIC ---
+    // --- UI HELPERS (Preloader, Sidebar, Animation) ---
+
     const preloader = document.getElementById('preloader');
     if (preloader) {
         window.addEventListener('load', () => {
@@ -244,101 +453,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 2. LAZY LOADING LOGIC ---
-    const lazyContent = document.querySelector('.lazy-content');
-
-    const lazyLoadObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && entry.target.getAttribute('data-lazy-loaded') === 'false') {
-                // Simulate loading the content (e.g., fetching images/data)
-                setTimeout(() => {
-                    entry.target.innerHTML = '<h3>✨ Featured Deals Loaded!</h3><p>New textbooks and tools available.</p>';
-                    entry.target.style.opacity = 1;
-                    entry.target.setAttribute('data-lazy-loaded', 'true');
-
-                }, 500); // Simulated delay
-
-                observer.unobserve(entry.target); // Stop observing once loaded
-            }
-        });
-    }, {
-        rootMargin: '0px',
-        threshold: 0.1
-    });
-
-    if (lazyContent) {
-        lazyLoadObserver.observe(lazyContent);
-    }
-
-    // --- ITEM MODAL LOGIC ---
-    const itemCards = document.querySelectorAll('.item-card');
-    const modalOverlay = document.getElementById('itemDetailModal');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const modalItemName = document.getElementById('modalItemName');
-    const modalItemPrice = document.getElementById('modalItemPrice');
-    const modalImagePlaceholder = document.getElementById('modalImagePlaceholder');
-
-    function populateAndOpenModal(card) {
-        const name = card.getAttribute('data-name');
-        const price = card.getAttribute('data-price');
-        const iconClass = card.getAttribute('data-icon-class');
-        const bgColor = card.getAttribute('data-bg-color');
-        const color = card.getAttribute('data-color');
-
-        // 1. Populate Text
-        if (modalItemName) modalItemName.textContent = name;
-        if (modalItemPrice) modalItemPrice.innerHTML = price;
-
-        // 2. Populate Image Placeholder
-        if (modalImagePlaceholder) {
-            modalImagePlaceholder.innerHTML = `<i class="${iconClass} fa-5x"></i>`;
-            modalImagePlaceholder.style.backgroundColor = bgColor;
-            modalImagePlaceholder.style.color = color;
-        }
-
-        // 3. Display Modal
-        if (modalOverlay) modalOverlay.classList.add('active');
-    }
-
-    if (itemCards.length > 0 && modalOverlay) {
-        itemCards.forEach(card => {
-            card.addEventListener('click', () => {
-                populateAndOpenModal(card);
-            });
-        });
-
-        if (closeModalBtn) {
-            closeModalBtn.addEventListener('click', () => {
-                modalOverlay.classList.remove('active');
-            });
-        }
-
-        // Close modal when clicking outside
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove('active');
-            }
-        });
-    }
-
-    // --- BORROW REQUEST SLIDE OUT LOGIC ---
     const sidebar = document.getElementById('needSidebar');
     const openBtn = document.getElementById('openNeedBtn');
-
     if (openBtn && sidebar) {
         openBtn.addEventListener('click', () => {
             sidebar.classList.add('open');
             setTimeout(() => {
                 window.location.href = 'need-request.html';
-            }, 400); // 400ms delay matches CSS transition duration
+            }, 400);
         });
     }
 
-    // --- 2. BACKGROUND ANIMATION POSITIONING ---
     const backgroundShapes = document.querySelectorAll('.background-anim li');
     backgroundShapes.forEach(shape => {
-        // Apply rotation animation to all list items for a dynamic look
         shape.style.animationName = 'animate-bg';
     });
-});
 
+    const lazyContent = document.querySelector('.lazy-content');
+    if (lazyContent) {
+        const lazyLoadObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.target.getAttribute('data-lazy-loaded') === 'false') {
+                    setTimeout(() => {
+                        entry.target.innerHTML = '<h3>✨ Featured Deals Loaded!</h3><p>New textbooks and tools available.</p>';
+                        entry.target.style.opacity = 1;
+                        entry.target.setAttribute('data-lazy-loaded', 'true');
+                    }, 500);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '0px', threshold: 0.1 });
+        lazyLoadObserver.observe(lazyContent);
+    }
+});
